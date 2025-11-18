@@ -1,0 +1,74 @@
+import request from '@/config/axios'
+
+export interface <%= entityClass %>VO {
+  id?: number
+<% fields.forEach(function(field) { %>
+  <%= field.name %>?: <%= getTsType(field.type) %>
+<% }); %>
+  createTime?: Date
+  updateTime?: Date
+}
+
+export interface <%= entityClass %>PageReqVO extends PageParam {
+  id?: number
+<% fields.forEach(function(field) { %>
+  <%= field.name %>?: <%= getTsType(field.type) %>
+<% }); %>
+  createTime?: Date[]
+}
+
+export interface <%= entityClass %>RespVO {
+  id: number
+<% fields.forEach(function(field) { %>
+  <%= field.name %>: <%= getTsType(field.type) %>
+<% }); %>
+  createTime: Date
+  updateTime: Date
+}
+
+// 查询<%= entityClass %>分页
+export const get<%= entityClass %>Page = (params: <%= entityClass %>PageReqVO) => {
+  return request.get({ url: '/system/<%= entityInstance %>/page', params })
+}
+
+// 查询<%= entityClass %>详情
+export const get<%= entityClass %> = (id: number) => {
+  return request.get({ url: '/system/<%= entityInstance %>/get?id=' + id })
+}
+
+// 新增<%= entityClass %>
+export const create<%= entityClass %> = (data: <%= entityClass %>VO) => {
+  return request.post({ url: '/system/<%= entityInstance %>/create', data })
+}
+
+// 修改<%= entityClass %>
+export const update<%= entityClass %> = (data: <%= entityClass %>VO) => {
+  return request.put({ url: '/system/<%= entityInstance %>/update', data })
+}
+
+// 删除<%= entityClass %>
+export const delete<%= entityClass %> = (id: number) => {
+  return request.delete({ url: '/system/<%= entityInstance %>/delete?id=' + id })
+}
+
+// 导出<%= entityClass %> Excel
+export const export<%= entityClass %> = (params) => {
+  return request.download({ url: '/system/<%= entityInstance %>/export-excel', params })
+}
+
+// TypeScript 类型映射函数
+function getTsType(javaType: string): string {
+  const typeMap: { [key: string]: string } = {
+    'String': 'string',
+    'Integer': 'number',
+    'Long': 'number',
+    'Double': 'number',
+    'Float': 'number',
+    'BigDecimal': 'number',
+    'Boolean': 'boolean',
+    'LocalDate': 'string',
+    'LocalTime': 'string',
+    'LocalDateTime': 'string'
+  }
+  return typeMap[javaType] || 'any'
+}

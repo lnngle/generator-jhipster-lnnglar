@@ -1,0 +1,76 @@
+import axios from 'axios'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { getToken, removeToken } from '@/utils/auth'
+import { useUserStore } from '@/stores/user'
+
+// 创建 axios 实例
+const service = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL || '/admin-api',
+  timeout: 50000
+})
+
+// 请求拦截器
+service.interceptors.request.use(
+  (config) => {
+    const token = getToken()
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
+  }
+)
+
+// 响应拦截器
+service.interceptors.response.use(
+  (response) => {
+    const { code, data, msg } = response.data
+    
+    // 未设置状态码则默认成功状态
+    if (code === undefined) {
+      return response.data
+    }
+    
+    // 二进制数据则直接返回
+    if (response.request.responseType === 'blob' || response.request.responseType === 'arraybuffer') {
+      return response.data
+    }
+    
+    if (code !== 0) {
+      ElMessage.error(msg || '系统错误')
+      if (code === 401) {
+        ElMessageBox.confirm('登录状态已过期，请重新登录', '系统提示', {
+          confirmButtonText: '重新登录',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          const userStore = useUserStore()
+          userStore.logout()
+        })
+      }
+      return Promise.reject(new Error(msg || '系统错误'))
+    }
+    
+    return data
+  },
+  (error) => {
+    ElMessage.error(error.message || '系统错误')
+    return Promise.reject(error)
+  }
+)
+
+export default service
+
+// 导出请求方法
+export const request = {
+  get: (config: any) => service.get(config.url, { params: config.params }),
+  post: (config: any) => service.post(config.url, config.data),
+  put: (config: any) => service.put(config.url, config.data),
+  delete: (config: any) => service.delete(config.url, { params: config.params }),
+  download: (config: any) => service.get(config.url, { 
+    params: config.params,
+    responseType: 'blob'
+  })
+}

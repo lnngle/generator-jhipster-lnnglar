@@ -1,0 +1,30 @@
+package cn.iocoder.yudao.module.system.api.dto;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+import java.time.LocalDateTime;
+
+/**
+ * <%= entityClass %> Response VO
+ *
+ * @author <%= author %>
+ */
+@Data
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+@Schema(description = "管理后台 - <%= entityClass %> Response VO")
+public class <%= entityClass %>RespVO extends <%= entityClass %>BaseVO {
+
+    @Schema(description = "ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
+    private Long id;
+
+    @Schema(description = "创建时间", requiredMode = Schema.RequiredMode.REQUIRED)
+    private LocalDateTime createTime;
+
+    @Schema(description = "更新时间", requiredMode = Schema.RequiredMode.REQUIRED)
+    private LocalDateTime updateTime;
+
+}

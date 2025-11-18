@@ -1,0 +1,126 @@
+# <%= baseName %> - Lnnglar Project
+
+这是一个使用 **generator-jhipster-lnnglar** 生成器创建的项目，集成了：
+
+- 🚀 **后端**: ruoyi-vue-pro (若依增强版)
+- 🎨 **前端**: yudao-ui-admin-vue3 (Element Plus)
+- 🔧 **技术栈**: Spring Boot + MyBatis Plus + Vue 3 + TypeScript
+
+## 📦 项目结构
+
+```
+<%= baseName %>/
+├── src/main/java/cn/iocoder/yudao/          # 后端 Java 代码
+│   ├── server/                              # 服务器启动配置
+│   ├── framework/                          # 框架核心代码
+│   └── module/                             # 业务模块
+│       ├── system/                         # 系统管理模块<% if (ruoyiModules.includes('infra')) { %>
+│       └── infra/                          # 基础设施模块<% } %>
+├── src/main/resources/                      # 后端资源文件
+│   ├── mapper/                            # MyBatis Mapper XML
+│   └── admin-ui/                          # 前端 Vue 项目
+│       ├── src/                           # 前端源码
+│       ├── package.json                   # 前端依赖
+│       └── vite.config.ts                 # Vite 配置
+├── pom.xml                                 # Maven 配置
+└── README.md                              # 项目说明
+```
+
+## 🚀 快速开始
+
+### 1. 环境要求
+
+- Java 17+
+- Node.js 16+
+- Maven 3.8+
+- MySQL 8.0+
+
+### 2. 数据库配置
+
+创建数据库并导入 SQL：
+
+```bash
+mysql -u root -p
+CREATE DATABASE <%= baseName %> CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+### 3. 启动后端
+
+```bash
+# 安装依赖
+mvn clean install
+
+# 启动服务
+mvn spring-boot:run
+```
+
+后端启动后访问：http://localhost:48080
+
+### 4. 启动前端
+
+```bash
+# 进入前端目录
+cd src/main/resources/admin-ui
+
+# 安装依赖
+npm install
+
+# 启动开发服务器
+npm run dev
+```
+
+前端启动后访问：http://localhost:80
+
+## 🛠️ 开发指南
+
+### 添加新实体
+
+使用 JHipster CLI 添加新实体：
+
+```bash
+# 创建 JDL 文件
+echo "entity User {
+  name String required
+  email String required
+  age Integer
+}" > user.jdl
+
+# 导入 JDL 并生成代码
+jhipster import-jdl user.jdl --blueprints lnnglar
+```
+
+### 模块配置
+
+项目已启用的模块：
+<% ruoyiModules.forEach(function(module) { %>- <%= module %>
+<% }); %>
+
+### API 文档
+
+启动后端后访问 Swagger 文档：http://localhost:48080/doc.html
+
+## 📚 技术文档
+
+- [ruoyi-vue-pro 文档](https://doc.iocoder.cn/)
+- [yudao-ui-admin-vue3 文档](https://vue.yudao.cn/)
+- [JHipster 文档](https://www.jhipster.tech/)
+
+## 🤝 贡献指南
+
+1. Fork 本项目
+2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 打开 Pull Request
+
+## 📄 许可证
+
+本项目采用 Apache-2.0 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情
+
+## 📞 支持
+
+如有问题，请提交 [Issue](https://github.com/your-username/generator-jhipster-lnnglar/issues)
+
+---
+
+*由 [generator-jhipster-lnnglar](https://github.com/your-username/generator-jhipster-lnnglar) 生成*

@@ -1,0 +1,30 @@
+package cn.iocoder.yudao.module.system.convert;
+
+import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.module.system.api.dto.<%= entityClass %>RespVO;
+import cn.iocoder.yudao.module.system.api.dto.<%= entityClass %>PageReqVO;
+import cn.iocoder.yudao.module.system.dal.dataobject.<%= entityClass %>DO;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
+
+import java.util.List;
+
+/**
+ * <%= entityClass %> Convert
+ *
+ * @author <%= author %>
+ */
+@Mapper
+public interface <%= entityClass %>Convert {
+
+    <%= entityClass %>Convert INSTANCE = Mappers.getMapper(<%= entityClass %>Convert.class);
+
+    <%= entityClass %>DO convert(<%= entityClass %>PageReqVO bean);
+
+    <%= entityClass %>RespVO convert(<%= entityClass %>DO bean);
+
+    List<<%= entityClass %>RespVO> convertList(List<<%= entityClass %>DO> list);
+
+    PageResult<<%= entityClass %>RespVO> convertPage(PageResult<<%= entityClass %>DO> page);
+
+}

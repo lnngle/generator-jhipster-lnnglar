@@ -1,0 +1,35 @@
+spring:
+  # 数据源配置 - 生产环境
+  datasource:
+    url: jdbc:mysql://prod-mysql:3306/<%= baseName %>?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&nullCatalogMeansCurrent=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:password}
+
+  # Redis 配置 - 生产环境
+  redis:
+    host: ${REDIS_HOST:prod-redis}
+    port: ${REDIS_PORT:6379}
+    database: ${REDIS_DATABASE:0}
+    password: ${REDIS_PASSWORD:}
+    timeout: 10s
+    lettuce:
+      pool:
+        max-active: 200
+        max-wait: -1ms
+        max-idle: 10
+        min-idle: 0
+
+# MyBatis Plus 配置
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+
+# 日志配置 - 生产环境
+logging:
+  level:
+    root: WARN
+    cn.iocoder.yudao: INFO
+    org.springframework.security: WARN
+  file:
+    name: /var/logs/<%= baseName %>/app.log

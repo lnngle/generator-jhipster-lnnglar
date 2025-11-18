@@ -1,0 +1,91 @@
+package cn.iocoder.yudao.module.system.controller.admin;
+
+import cn.iocoder.yudao.framework.common.pojo.CommonResult;
+import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.framework.excel.core.util.ExcelUtils;
+import cn.iocoder.yudao.framework.operatelog.core.annotations.OperateLog;
+import cn.iocoder.yudao.module.system.api.dto.<%= entityClass %>PageReqVO;
+import cn.iocoder.yudao.module.system.api.dto.<%= entityClass %>RespVO;
+import cn.iocoder.yudao.module.system.api.dto.<%= entityClass %>BaseVO;
+import cn.iocoder.yudao.module.system.service.<%= entityClass %>Service;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.io.IOException;
+import java.util.List;
+
+import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
+
+/**
+ * <%= entityClass %> Controller
+ *
+ * @author <%= author %>
+ */
+@Tag(name = "管理后台 - <%= entityClass %>")
+@RestController
+@RequestMapping("/system/<%= entityInstance %>")
+@Validated
+public class <%= entityClass %>Controller {
+
+    @Resource
+    private <%= entityClass %>Service <%= entityInstance %>Service;
+
+    @PostMapping("/create")
+    @Operation(summary = "创建<%= entityClass %>")
+    @PreAuthorize("@ss.hasPermission('system:<%= entityInstance %>:create')")
+    public CommonResult<Long> create<%= entityClass %>(@Valid @RequestBody <%= entityClass %>BaseVO createReqVO) {
+        return success(<%= entityInstance %>Service.create<%= entityClass %>(createReqVO));
+    }
+
+    @PutMapping("/update")
+    @Operation(summary = "更新<%= entityClass %>")
+    @PreAuthorize("@ss.hasPermission('system:<%= entityInstance %>:update')")
+    public CommonResult<Boolean> update<%= entityClass %>(@Valid @RequestBody <%= entityClass %>BaseVO updateReqVO) {
+        <%= entityInstance %>Service.update<%= entityClass %>(updateReqVO);
+        return success(true);
+    }
+
+    @DeleteMapping("/delete")
+    @Operation(summary = "删除<%= entityClass %>")
+    @Parameter(name = "id", description = "编号", required = true)
+    @PreAuthorize("@ss.hasPermission('system:<%= entityInstance %>:delete')")
+    public CommonResult<Boolean> delete<%= entityClass %>(@RequestParam("id") Long id) {
+        <%= entityInstance %>Service.delete<%= entityClass %>(id);
+        return success(true);
+    }
+
+    @GetMapping("/get")
+    @Operation(summary = "获得<%= entityClass %>")
+    @Parameter(name = "id", description = "编号", required = true, example = "1024")
+    @PreAuthorize("@ss.hasPermission('system:<%= entityInstance %>:query')")
+    public CommonResult<<%= entityClass %>RespVO> get<%= entityClass %>(@RequestParam("id") Long id) {
+        return success(<%= entityInstance %>Service.get<%= entityClass %>(id));
+    }
+
+    @GetMapping("/page")
+    @Operation(summary = "获得<%= entityClass %>分页")
+    @PreAuthorize("@ss.hasPermission('system:<%= entityInstance %>:query')")
+    public CommonResult<PageResult<<%= entityClass %>RespVO>> get<%= entityClass %>Page(@Valid <%= entityClass %>PageReqVO pageReqVO) {
+        return success(<%= entityInstance %>Service.get<%= entityClass %>Page(pageReqVO));
+    }
+
+    @GetMapping("/export-excel")
+    @Operation(summary = "导出<%= entityClass %> Excel")
+    @PreAuthorize("@ss.hasPermission('system:<%= entityInstance %>:export')")
+    @OperateLog(type = EXPORT)
+    public void export<%= entityClass %>Excel(@Valid <%= entityClass %>PageReqVO pageReqVO,
+              HttpServletResponse response) throws IOException {
+        pageReqVO.setPageSize(PageResult.PAGE_SIZE_NONE);
+        List<<%= entityClass %>RespVO> list = <%= entityInstance %>Service.get<%= entityClass %>Page(pageReqVO).getList();
+        // 导出 Excel
+        ExcelUtils.write(response, "<%= entityClass %>数据.xls", "数据", <%= entityClass %>RespVO.class, list);
+    }
+
+}

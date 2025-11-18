@@ -1,0 +1,37 @@
+package cn.iocoder.yudao.module.system.api.dto;
+
+import cn.iocoder.yudao.framework.common.pojo.PageParam;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+import java.time.LocalDateTime;
+
+/**
+ * <%= entityClass %> Page Request VO
+ *
+ * @author <%= author %>
+ */
+@Data
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+@Schema(description = "管理后台 - <%= entityClass %>分页 Request VO")
+public class <%= entityClass %>PageReqVO extends PageParam {
+
+    @Schema(description = "ID", example = "1024")
+    private Long id;
+
+<% fields.forEach(function(field, index) { %>
+    /**
+     * <%= field.comment || field.name %>
+     */
+    private <%= field.type %> <%= field.name %>;
+
+<% }); %>
+
+    @Schema(description = "创建时间")
+    @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
+    private LocalDateTime[] createTime;
+
+}

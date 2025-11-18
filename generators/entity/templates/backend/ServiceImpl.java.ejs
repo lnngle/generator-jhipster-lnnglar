@@ -1,0 +1,74 @@
+package cn.iocoder.yudao.module.system.service.impl;
+
+import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.module.system.api.dto.<%= entityClass %>PageReqVO;
+import cn.iocoder.yudao.module.system.api.dto.<%= entityClass %>RespVO;
+import cn.iocoder.yudao.module.system.api.dto.<%= entityClass %>BaseVO;
+import cn.iocoder.yudao.module.system.convert.<%= entityClass %>Convert;
+import cn.iocoder.yudao.module.system.dal.dataobject.<%= entityClass %>DO;
+import cn.iocoder.yudao.module.system.dal.mysql.<%= entityClass %>Mapper;
+import cn.iocoder.yudao.module.system.service.<%= entityClass %>Service;
+import cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
+
+import javax.annotation.Resource;
+import java.util.Collection;
+
+import static cn.iocoder.yudao.module.system.enums.ErrorCodeConstants.<%= entityName.toUpperCase() %>_NOT_EXISTS;
+
+/**
+ * <%= entityClass %> Service 实现类
+ *
+ * @author <%= author %>
+ */
+@Service
+@Validated
+public class <%= entityClass %>ServiceImpl implements <%= entityClass %>Service {
+
+    @Resource
+    private <%= entityClass %>Mapper <%= entityInstance %>Mapper;
+
+    @Override
+    public Long create<%= entityClass %>(<%= entityClass %>BaseVO createReqVO) {
+        // 插入
+        <%= entityClass %>DO <%= entityInstance %> = <%= entityClass %>Convert.INSTANCE.convert(createReqVO);
+        <%= entityInstance %>Mapper.insert(<%= entityInstance %>);
+        // 返回
+        return <%= entityInstance %>.getId();
+    }
+
+    @Override
+    public void update<%= entityClass %>(<%= entityClass %>BaseVO updateReqVO) {
+        // 校验存在
+        validate<%= entityClass %>Exists(updateReqVO.getId());
+        // 更新
+        <%= entityClass %>DO updateObj = <%= entityClass %>Convert.INSTANCE.convert(updateReqVO);
+        <%= entityInstance %>Mapper.updateById(updateObj);
+    }
+
+    @Override
+    public void delete<%= entityClass %>(Long id) {
+        // 校验存在
+        validate<%= entityClass %>Exists(id);
+        // 删除
+        <%= entityInstance %>Mapper.deleteById(id);
+    }
+
+    private void validate<%= entityClass %>Exists(Long id) {
+        if (<%= entityInstance %>Mapper.selectById(id) == null) {
+            throw ServiceExceptionUtil.exception(<%= entityName.toUpperCase() %>_NOT_EXISTS);
+        }
+    }
+
+    @Override
+    public <%= entityClass %>RespVO get<%= entityClass %>(Long id) {
+        return <%= entityClass %>Convert.INSTANCE.convert(<%= entityInstance %>Mapper.selectById(id));
+    }
+
+    @Override
+    public PageResult<<%= entityClass %>RespVO> get<%= entityClass %>Page(<%= entityClass %>PageReqVO pageReqVO) {
+        return <%= entityClass %>Convert.INSTANCE.convertPage(<%= entityInstance %>Mapper.selectPage(pageReqVO));
+    }
+
+}

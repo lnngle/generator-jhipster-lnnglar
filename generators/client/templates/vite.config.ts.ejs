@@ -1,0 +1,55 @@
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import { resolve } from 'path'
+
+export default defineConfig({
+  plugins: [
+    vue(),
+    AutoImport({
+      resolvers: [ElementPlusResolver()],
+      imports: [
+        'vue',
+        'vue-router',
+        'pinia',
+        '@vueuse/core'
+      ],
+      dts: true
+    }),
+    Components({
+      resolvers: [ElementPlusResolver()],
+      dts: true
+    })
+  ],
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, 'src')
+    }
+  },
+  server: {
+    port: 80,
+    open: true,
+    cors: true,
+    proxy: {
+      '/admin-api': {
+        target: 'http://localhost:48080',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/admin-api/, '')
+      }
+    }
+  },
+  build: {
+    target: 'es2015',
+    outDir: '../../resources/static/admin-ui',
+    assetsDir: 'assets',
+    rollupOptions: {
+      output: {
+        chunkFileNames: 'js/[name]-[hash].js',
+        entryFileNames: 'js/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]'
+      }
+    }
+  }
+})

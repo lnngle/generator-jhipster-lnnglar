@@ -1,0 +1,37 @@
+import request from '@/config/axios'
+
+export interface PageParam {
+  pageNo: number
+  pageSize: number
+}
+
+export interface PageResult<T> {
+  list: T[]
+  total: number
+}
+
+export interface CommonResult<T = any> {
+  code: number
+  data: T
+  msg: string
+}
+
+export const get = (params: any) => {
+  return request.get({ url: '', params })
+}
+
+export const post = (data: any) => {
+  return request.post({ url: '', data })
+}
+
+export const put = (data: any) => {
+  return request.put({ url: '', data })
+}
+
+export const del = (params: any) => {
+  return request.delete({ url: '', params })
+}
+
+export const download = (data: any) => {
+  return request.download({ url: '', data })
+}

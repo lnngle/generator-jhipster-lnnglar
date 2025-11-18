@@ -1,0 +1,30 @@
+package cn.iocoder.yudao.module.system.dal.mysql;
+
+import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.framework.mybatis.core.query.LambdaQueryWrapperX;
+import cn.iocoder.yudao.framework.mybatis.core.mapper.BaseMapperX;
+import cn.iocoder.yudao.module.system.api.dto.<%= entityClass %>PageReqVO;
+import cn.iocoder.yudao.module.system.dal.dataobject.<%= entityClass %>DO;
+import org.apache.ibatis.annotations.Mapper;
+
+/**
+ * <%= entityClass %> Mapper
+ *
+ * @author <%= author %>
+ */
+@Mapper
+public interface <%= entityClass %>Mapper extends BaseMapperX<<%= entityClass %>DO> {
+
+    default PageResult<<%= entityClass %>DO> selectPage(<%= entityClass %>PageReqVO reqVO) {
+        return selectPage(reqVO, new LambdaQueryWrapperX<<%= entityClass %>DO>()
+<% if (fields.some(f => f.name === 'name' || f.name === 'title')) { %>
+                .likeIfPresent(<%= entityClass %>DO::getName, reqVO.getName())<% } %>
+<% fields.forEach(function(field) { %>
+<% if (field.searchable) { %>
+                .eqIfPresent(<%= entityClass %>DO::get<%= capitalize(field.name) %>, reqVO.get<%= capitalize(field.name) %>())<% } %>
+<% }); %>
+                .betweenIfPresent(<%= entityClass %>DO::getCreateTime, reqVO.getCreateTime())
+                .orderByDesc(<%= entityClass %>DO::getId));
+    }
+
+}

@@ -1,0 +1,71 @@
+import { defineStore } from 'pinia'
+import { login as loginApi, getUserInfo as getUserInfoApi } from '@/api/auth'
+import { getToken, setToken, removeToken } from '@/utils/auth'
+
+interface UserState {
+  token: string
+  name: string
+  avatar: string
+  roles: string[]
+  permissions: string[]
+}
+
+export const useUserStore = defineStore('user', {
+  state: (): UserState => ({
+    token: getToken() || '',
+    name: '',
+    avatar: '',
+    roles: [],
+    permissions: []
+  }),
+
+  getters: {
+    isLoggedIn: (state) => !!state.token,
+    hasRole: (state) => (role: string) => state.roles.includes(role),
+    hasPermission: (state) => (permission: string) => state.permissions.includes(permission)
+  },
+
+  actions: {
+    async login(loginForm: any) {
+      try {
+        const { data } = await loginApi(loginForm)
+        this.token = data.token
+        setToken(data.token)
+        return data
+      } catch (error) {
+        throw error
+      }
+    },
+
+    async getUserInfo() {
+      try {
+        const { data } = await getUserInfoApi()
+        this.name = data.name
+        this.avatar = data.avatar
+        this.roles = data.roles || []
+        this.permissions = data.permissions || []
+        return data
+      } catch (error) {
+        throw error
+      }
+    },
+
+    async logout() {
+      this.token = ''
+      this.name = ''
+      this.avatar = ''
+      this.roles = []
+      this.permissions = []
+      removeToken()
+    },
+
+    resetToken() {
+      this.token = ''
+      this.name = ''
+      this.avatar = ''
+      this.roles = []
+      this.permissions = []
+      removeToken()
+    }
+  }
+})
