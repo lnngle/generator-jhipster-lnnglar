@@ -1,0 +1,38 @@
+package cn.iocoder.<%= baseName %>;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
+
+/**
+ * <%= baseName %> 应用程序启动类
+ * 
+ * @author generator-jhipster-lnnglar
+ */
+@SpringBootApplication
+@RequiredArgsConstructor
+public class <%= baseName.charAt(0).toUpperCase() + baseName.slice(1) %>Application {
+
+    public static void main(String[] args) {
+        SpringApplication.run(<%= baseName.charAt(0).toUpperCase() + baseName.slice(1) %>Application.class, args);
+    }
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void onApplicationReady() {
+        System.out.println("""
+            
+            ████████╗ ██████╗  █████╗ ██╗     ██╗███╗   ██╗
+            ╚══██╔══╝██╔═══██╗██╔══██╗██║     ██║████╗  ██║
+               ██║   ██║   ██║███████║██║     ██║██╔██╗ ██║
+               ██║   ██║   ██║██╔══██║██║     ██║██║╚██╗██║
+               ██║   ╚██████╔╝██║  ██║███████╗██║██║ ╚████║
+               ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝╚═╝  ╚═══╝
+                   
+            🎉 <%= baseName %> Application started successfully!
+            📚 API Documentation: http://localhost:8080/doc.html
+            🔧 Health Check: http://localhost:8080/actuator/health
+            """);
+    }
+}
